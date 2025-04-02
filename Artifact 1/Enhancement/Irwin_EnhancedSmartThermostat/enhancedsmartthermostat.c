@@ -63,6 +63,14 @@
 #define EVENT_DECREASE_TEMP (1 << 0)
 #define EVENT_INCREASE_TEMP (1 << 1)
 
+// Schedule Default Values
+#define DEFAULT_SCHEDULE_HOUR_1 8
+#define DEFAULT_SCHEDULE_MIN_1  0
+#define DEFAULT_SCHEDULE_SETPOINT_1 20
+#define DEFAULT_SCHEDULE_HOUR_2 20
+#define DEFAULT_SCHEDULE_MIN_2  0
+#define DEFAULT_SCHEDULE_SETPOINT_2 15
+
 // Schedule Data Model
 #define NUM_SCHEDULE_EVENTS 2
 
@@ -127,6 +135,7 @@ I2C_Transaction i2cTransaction;
 I2C_Handle i2c;
 Event_Handle buttonEvent;
 
+// Socket Variables
 int serverSocket = -1;
 int clientSocket = -1;
 
@@ -155,40 +164,50 @@ void gpioButtonFxn1(uint_least8_t index);
  * Tasks include button checks, temperature polling, LED status,
  * real-time keeping, schedule checking, UART communication, and
  * server communication.
+ *
+ * Higher Priority Tasks run first (e.g. 2 > 1). Tasks of the same
+ * priority will run round robin.
  */
 void createTasks(void) {
     Task_Params taskParams;
 
+    // Button Check Task
     Task_Params_init(&taskParams);
     taskParams.stackSize = 1024;
-    taskParams.priority = 1;
+    taskParams.priority = 2;    //
     Task_create(ButtonCheck, &taskParams, NULL);
 
+    // Temperature Update Task
+    Task_Params_init(&taskParams);
+    taskParams.stackSize = 1024;
+    taskParams.priority = 1;   //
+    Task_create(TempUpdate, &taskParams, NULL);
+
+    // LED Update Task
     Task_Params_init(&taskParams);
     taskParams.stackSize = 1024;
     taskParams.priority = 1;
-    Task_create(TempUpdate, &taskParams, NULL);
-
-    Task_Params_init(&taskParams);
-    taskParams.stackSize = 1024;
-    taskParams.priority = 2;
     Task_create(LEDUpdate, &taskParams, NULL);
 
+    // Time Update Task
     Task_Params_init(&taskParams);
     taskParams.stackSize = 1024;
     taskParams.priority = 2;
     Task_create(TimeUpdate, &taskParams, NULL);
 
+    // Schedule Check Task
     Task_Params_init(&taskParams);
     taskParams.stackSize = 1024;
     taskParams.priority = 2;
     Task_create(ScheduleCheck, &taskParams, NULL);
 
+    // UART Update Task
     Task_Params_init(&taskParams);
     taskParams.stackSize = 1024;
     taskParams.priority = 1;
     Task_create(UARTUpdate, &taskParams, NULL);
 
+    // Server Task
     Task_Params_init(&taskParams);
     taskParams.stackSize = 2048;
     taskParams.priority = 2;
@@ -203,10 +222,10 @@ void createTasks(void) {
  * Initializes GPIOs, peripherals, syncs time, sets default schedule,
  * and enters idle loop.
  */
-
 void *mainThread(void *arg0) {
-    GPIO_init();
 
+    // Initialize & Configure GPIO for Buttons and LED
+    GPIO_init();
     GPIO_setConfig(CONFIG_GPIO_LED_0, GPIO_CFG_OUT_STD | GPIO_CFG_OUT_LOW);
     GPIO_setConfig(CONFIG_GPIO_BUTTON_0, GPIO_CFG_IN_PU | GPIO_CFG_IN_INT_FALLING);
     GPIO_setConfig(CONFIG_GPIO_BUTTON_1, GPIO_CFG_IN_PU | GPIO_CFG_IN_INT_FALLING);
@@ -215,40 +234,45 @@ void *mainThread(void *arg0) {
     GPIO_enableInt(CONFIG_GPIO_BUTTON_0);
     GPIO_enableInt(CONFIG_GPIO_BUTTON_1);
 
+    // Initialize Other Peripherals
     initUART();
     initI2C();
     initWiFi();
+
     DISPLAY("GPIO + UART + I2C + WiFi Initialized\r\n");
 
+    // Create Event Object for Button Handling
     buttonEvent = Event_create(NULL, NULL);
 
+    // Synchronize time with NTP server
     syncTimeWithNTP();
 
-    // Set default schedule entries
-    schedule[0].hour = 8;
-    schedule[0].minute = 0;
-    schedule[0].setpoint = 20;
+    // Initialize Schedule Variables
+    schedule[0].hour = DEFAULT_SCHEDULE_HOUR_1;
+    schedule[0].minute = DEFAULT_SCHEDULE_MIN_1;
+    schedule[0].setpoint = DEFAULT_SCHEDULE_SETPOINT_1;
 
-    schedule[1].hour = 20;
-    schedule[1].minute = 0;
-    schedule[1].setpoint = 15;
+    schedule[1].hour = DEFAULT_SCHEDULE_HOUR_2;
+    schedule[1].minute = DEFAULT_SCHEDULE_MIN_2;
+    schedule[1].setpoint = DEFAULT_SCHEDULE_SETPOINT_2;
 
+    // Create All Tasks
     createTasks();
 
+    // Enter Idle Loop
     while (1) {
         Task_sleep(BIOS_WAIT_FOREVER);
     }
 }
 
 
-/* Task Functions */
+/* -- Task Functions -- */
 
 /*
  * ======== ButtonCheck ========
  * Event-driven task that handles button press events.
  * Adjusts the thermostat setpoint up or down based on flags.
  */
-
 void ButtonCheck(UArg a0, UArg a1) {
     while (1) {
         uint32_t events = Event_pend(buttonEvent, Event_Id_NONE, EVENT_DECREASE_TEMP | EVENT_INCREASE_TEMP, 0);
@@ -513,7 +537,7 @@ void gpioButtonFxn1(uint_least8_t index) {
 }
 
 
-/* Other Function Definitions */
+/* -- Other Function Definitions -- */
 
 /*
  * ======== initUART ========
@@ -526,7 +550,7 @@ void initUART(void)
     size_t bytesWritten = 0;
     uint32_t status     = UART2_STATUS_SUCCESS;
 
-    /* Create a UART where the default read and write mode is BLOCKING */
+    // Create a UART where the default read and write mode is BLOCKING
     UART2_Params_init(&uartParams);
     uartParams.baudRate = 115200;
 
@@ -534,7 +558,7 @@ void initUART(void)
 
     if (uart == NULL)
     {
-        /* UART2_open() failed */
+        // UART2_open() Failed
         while (1) {}
     }
 }
@@ -573,7 +597,7 @@ void initI2C(void)
     // Try to determine which sensor we have.
     // Scan through the possible sensor addresses
 
-    /* Common I2C transaction setup */
+    // Common I2C transaction setup
     i2cTransaction.writeBuf   = txBuffer;
     i2cTransaction.writeCount = 1;
     i2cTransaction.readBuf    = rxBuffer;
@@ -609,10 +633,10 @@ void initI2C(void)
 /*
  * ======== readTemp ========
  * Reads temperature value from sensor over I2C.
- * Converts sensor reading to degrees Celsius and bounds it between 0–99.
+ * Converts sensor reading to degrees Celsius and bounds it between 0-99.
  *
  * RETURNS:
- *      int16_t – current temperature in °C (bounded)
+ *      int16_t    Current temperature in degrees Celsius (bounded)
  */
 int16_t readTemp(void)
 {
@@ -622,17 +646,11 @@ int16_t readTemp(void)
     i2cTransaction.readCount = 2;
     if (I2C_transfer(i2c, &i2cTransaction))
     {
-        /*
-         * Extract degrees C from the received data;
-         * see TMP sensor datasheet
-         */
+        // Extract degrees C from the received data; see TMP sensor datasheet
         temperature = (rxBuffer[0] << 8) | (rxBuffer[1]);
         temperature *= 0.0078125;
 
-        /*
-         * If the MSB is set '1', then we have a 2's complement
-         * negative value which needs to be sign extended
-         */
+        // If the MSB is set '1', then we have a 2's complement negative value which needs to be sign extended
         if (rxBuffer[0] & 0x80)
         {
             temperature |= 0xF000;
@@ -661,7 +679,6 @@ int16_t readTemp(void)
  * Attempts to synchronize the internal clock using NTP.
  * If sync fails, sets clock to a default fallback time.
  */
-
 void syncTimeWithNTP(void) {
     int status;
 

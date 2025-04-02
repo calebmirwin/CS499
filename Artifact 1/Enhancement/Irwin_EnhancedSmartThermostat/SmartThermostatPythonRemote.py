@@ -1,7 +1,6 @@
 """
-smartThermostatRemote.py
-
-Designer: Caleb Irwin
+FILE: smartThermostatRemote.py
+AUTHOR: Caleb Irwin
 Date: 03/23/2025
 
 Description:
@@ -19,9 +18,9 @@ from tkinter import Canvas
 import socket
 import threading
 
+# Thermostat Address & Port Configuration Constants
 THERMOSTAT_IP = "192.168.50.92"
 THERMOSTAT_PORT = 5000
-
 
 class ThermostatGUI:
     """
@@ -45,12 +44,10 @@ class ThermostatGUI:
         self.setpoint = tk.IntVar(value=20)
         self.pending_setpoint = tk.IntVar(value=20)
         self.heat = tk.BooleanVar(value=False)
+
         self.in_main_view = True
         self.waiting_for_ack = False
-
         self.setpoint_label = None
-        
-
         self.sock = None
         self.running = True
 
@@ -81,7 +78,7 @@ class ThermostatGUI:
         self.setpoint_label = ttk.Label(self.root, textvariable=self.pending_setpoint, font=("Arial", 14))
         self.setpoint_label.grid(row=1, column=1, sticky="w", padx=5)
 
-        # Row 2: Setpoint UP, DOWN, Update Buttons
+        # Row 2: Setpoint UP, DOWN, and Update Buttons
         ttk.Button(self.root, text="\u25BC", command=self.decrease_setpoint).grid(row=2, column=0, pady=10)
         ttk.Button(self.root, text="\u25B2", command=self.increase_setpoint).grid(row=2, column=1, pady=10)
         ttk.Button(self.root, text="Update Setpoint", command=self.send_pending_setpoint).grid(row=2, column=2, columnspan=2, pady=10, padx = (25))
@@ -101,29 +98,30 @@ class ThermostatGUI:
         for widget in self.root.winfo_children():
             widget.destroy()
 
+        # Schedule Structure & Entry Variables
         self.schedule = [
-            {"hour": tk.IntVar(value=8), "minute": tk.IntVar(value=0), "setpoint": tk.IntVar(value=20)},
-            {"hour": tk.IntVar(value=20), "minute": tk.IntVar(value=0), "setpoint": tk.IntVar(value=18)}
+            {"hour": tk.IntVar(), "minute": tk.IntVar(), "setpoint": tk.IntVar()},
+            {"hour": tk.IntVar(), "minute": tk.IntVar(), "setpoint": tk.IntVar()}
         ]
 
         def create_schedule_row(parent, row, entry):
             # Create a row of widgets for one schedule entry (time and setpoint)
             base_row = row * 4
 
-            # Entry
+            # Entry Label
             ttk.Label(parent, text=f"Entry {row + 1}").grid(row=base_row, column=0, columnspan=1, pady=(10, 0), padx=(10))
 
-            # Time 
+            # Time Labels
             ttk.Label(parent, text="Time:").grid(row=base_row+1, column=0, padx=(20, 0))
             ttk.Label(parent, textvariable=entry["hour"]).grid(row=base_row+1, column=1)
             ttk.Label(parent, text=":").grid(row=base_row+1, column=2)
             ttk.Label(parent, textvariable=entry["minute"]).grid(row=base_row+1, column=3)
 
-            # Setpoint
+            # Setpoint Labels
             ttk.Label(parent, text="Setpoint:").grid(row=base_row+1, column=4, padx=(10, 0))
             ttk.Label(parent, textvariable=entry["setpoint"]).grid(row=base_row+1, column=5)
 
-            # Controls
+            # UP, DOWN Control Buttons
             ttk.Button(parent, text="▲", command=lambda: entry["hour"].set((entry["hour"].get() + 1) % 24)).grid(row=base_row+2, column=1)
             ttk.Button(parent, text="▼", command=lambda: entry["hour"].set((entry["hour"].get() - 1) % 24)).grid(row=base_row+3, column=1)
 
@@ -133,9 +131,11 @@ class ThermostatGUI:
             ttk.Button(parent, text="▲", command=lambda: entry["setpoint"].set(min(entry["setpoint"].get() + 1, 99))).grid(row=base_row+2, column=5)
             ttk.Button(parent, text="▼", command=lambda: entry["setpoint"].set(max(entry["setpoint"].get() - 1, 0))).grid(row=base_row+3, column=5)
 
+        # Crate Row For Each Schedule Entry
         for i, entry in enumerate(self.schedule):
             create_schedule_row(self.root, i, entry)
 
+        # Submit Schedule Function
         def submit_schedule():
             s1 = self.schedule[0]
             s2 = self.schedule[1]
@@ -143,6 +143,7 @@ class ThermostatGUI:
                            f"[{s2['hour'].get():02d}:{s2['minute'].get():02d},{s2['setpoint'].get()}]"
             self.send_command(schedule_str)
 
+        # Submit Schedule Button
         ttk.Button(self.root, text="Submit Schedule", command=submit_schedule).grid(row=10, column=0, columnspan=6, pady=10)
         ttk.Button(self.root, text="Back", command=self.create_main_view).grid(row=11, column=0, columnspan=6, pady=(0, 10))
 
@@ -192,7 +193,6 @@ class ThermostatGUI:
         self.send_command(f"SETPOINT:{self.pending_setpoint.get()}")
         self.setpoint_label.config(foreground="black")
 
-
     def socket_loop(self):
         """
         Threaded socket communication loop.
@@ -225,7 +225,7 @@ class ThermostatGUI:
             - SCHEDULE:[hh:mm,temp],[hh:mm,temp]
             - ACK
         """
-
+        
         message = message.strip()
 
         if message.startswith("TEMP:"):
@@ -274,8 +274,6 @@ class ThermostatGUI:
 
         elif message == "ACK":
             pass
-
-
 
     def send_command(self, message):
         """
