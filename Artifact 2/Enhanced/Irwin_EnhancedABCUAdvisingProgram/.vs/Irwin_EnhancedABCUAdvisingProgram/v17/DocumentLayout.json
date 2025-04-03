@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\caleb\\Documents\\GitHub\\CS499\\Artifact 2\\Enhanced\\Irwin_EnhancedABCUAdvisingProgram\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7FC445ED-4FB4-44DE-89EF-040F30F5DCA3}|Irwin_EnhancedABCUAdvisingProgram.vcxproj|C:\\Users\\caleb\\Documents\\GitHub\\CS499\\Artifact 2\\Enhanced\\Irwin_EnhancedABCUAdvisingProgram\\EnhancedABCUAdvisingProgram.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{7FC445ED-4FB4-44DE-89EF-040F30F5DCA3}|Irwin_EnhancedABCUAdvisingProgram.vcxproj|solutionrelative:EnhancedABCUAdvisingProgram.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "EnhancedABCUAdvisingProgram.cpp",
+              "DocumentMoniker": "C:\\Users\\caleb\\Documents\\GitHub\\CS499\\Artifact 2\\Enhanced\\Irwin_EnhancedABCUAdvisingProgram\\EnhancedABCUAdvisingProgram.cpp",
+              "RelativeDocumentMoniker": "EnhancedABCUAdvisingProgram.cpp",
+              "ToolTip": "C:\\Users\\caleb\\Documents\\GitHub\\CS499\\Artifact 2\\Enhanced\\Irwin_EnhancedABCUAdvisingProgram\\EnhancedABCUAdvisingProgram.cpp",
+              "RelativeToolTip": "EnhancedABCUAdvisingProgram.cpp",
+              "ViewState": "AgIAAOUBAAAAAAAAAAAowPUBAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-02T02:08:34.08Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
