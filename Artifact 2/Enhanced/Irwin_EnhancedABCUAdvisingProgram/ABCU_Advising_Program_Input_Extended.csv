@@ -1,33 +1,32 @@
-MATH201,Discrete Mathematics,,
+CSCI380,Human-Computer Interaction
+CSCI320,Game Development I,CSCI160
+CSCI230,Mobile App Development,CSCI210
+CSCI340,Data Visualization,CSCI170
+MATH262,Linear Algebra,MATH210
+MATH201,Discrete Mathematics
+CSCI350,Networking Fundamentals
+CSCI200,Data Structures & Algorithms,CSCI101
+CSCI370,Embedded Systems,CSCI180
+CSCI210,Web Development I,CSCI150
+CSCI150,Introduction to Python
+CSCI160,Data Structures,CSCI150
+CSCI360,Advanced Networking,CSCI350
+MATH210,Calculus
+CSCI250,Operating Systems,CSCI180
+CSCI330,Game Development II,CSCI320
+CSCI270,Cybersecurity Principles,CSCI180
+CSCI280,Artificial Intelligence,CSCI240
+CSCI290,Cloud Computing,CSCI250
 CSCI300,Introduction to Algorithms,CSCI200,MATH201
-CSCI350,Operating Systems,CSCI300,
-CSCI101,Introduction to Programming in C++,CSCI100,
-CSCI270,Cybersecurity Principles,CSCI180,
-CSCI301,Advanced Programming in C++,CSCI101,
-CSCI400,Large Software Development,CSCI301,CSCI350
-CSCI200,Data Structures,CSCI101,
-CSCI150,Introduction to Python,,
-CSCI100,Introduction to Computer Science,,
-CSCI180,Computer Architecture,CSCI150,
-CSCI260,Software Engineering,CSCI200,
-MATH210,Calculus,,
-CSCI320,Game Development I,CSCI160,
-CSCI210,Web Development I,CSCI150,
-CSCI170,Introduction to Databases,CSCI150,
-CSCI280,Artificial Intelligence,CSCI240,
-CSCI250,Operating Systems,CSCI180,
-CSCI370,Embedded Systems,CSCI180,
-CSCI230,Mobile App Development,CSCI210,
-CSCI290,Cloud Computing,CSCI250,
-CSCI340,Data Visualization,CSCI170,
-CSCI350,Networking Fundamentals,,
-CSCI220,Web Development II,CSCI210,
-CSCI390,Ethics in Computing,,
-CSCI160,Data Structures,CSCI150,
-CSCI200,Algorithms,CSCI160,CSCI190
-CSCI240,Machine Learning,CSCI200,
+CSCI101,Introduction to Programming in C++,CSCI100
+CSCI390,Ethics in Computing
+CSCI220,Web Development II,CSCI210
+CSCI180,Computer Architecture,CSCI150
+CSCI301,Advanced Programming in C++,CSCI101
 CSCI310,Big Data Analytics,CSCI240,CSCI170
-MATH262,Linear Algebra,MATH210,
-CSCI330,Game Development II,CSCI320,
-CSCI360,Advanced Networking,CSCI350,
-CSCI380,Human-Computer Interaction,,
+CSCI350,Operating Systems,CSCI300
+CSCI170,Introduction to Databases,CSCI150
+CSCI100,Introduction to Computer Science
+CSCI400,Large Software Development,CSCI301,CSCI350
+CSCI240,Machine Learning,CSCI200
+CSCI260,Software Engineering,CSCI200

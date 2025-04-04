@@ -32,16 +32,16 @@ struct Course {
     vector<string> prerequisites;
 };
 
-//Internal structure for tree node
+//Structure for tree node
 struct Node {
     Course course;
-    Node* height;
     Node* left;
     Node* right;
+    int height;
 
     //Default constructor
     Node() {
-        height = nullptr;
+        height = -1;
         left = nullptr;
         right = nullptr;
     }
@@ -53,6 +53,7 @@ struct Node {
     }
 };
 
+
 //============================================================================
 // Binary Search Tree Class Definition
 //============================================================================
@@ -63,246 +64,61 @@ struct Node {
  */
 class BinarySearchTree {
 
-private:
-    Node* root;
+    private:
+        Node* root;
 
-    void addNode(Node* node, Course course);
-    void inOrder(Node* node);
-    void postOrder(Node* node);
-    void preOrder(Node* node);
-    void updateHeight(Node* node) {
-        // Update Node Height
-    }
-    int height(Node* node) {
-        // Return Height
-    }
-    Node* removeNode(Node* node, string courseId);
-    Node* leftRotate(Node* node) {
-        // return rightChild;
-    }
-    Node* rightRotate(Node* node) {
-        // return leftChild;
-    }
-    Node* rebalance(Node* node) {
-        return node;
-    }
+        int height(Node* node);
+        void inOrder(Node* node);
+        void postOrder(Node* node);
+        void preOrder(Node* node);
+        void updateHeight(Node* node);
+        void destroyTree(Node* node);
+        Node* addNode(Node* node, Course course);
+        Node* removeNode(Node* node, string courseId);
+        Node* leftRotate(Node* node);
+        Node* rightRotate(Node* node);
+        Node* rebalance(Node* node);
 
-public:
-    BinarySearchTree();
-    virtual ~BinarySearchTree();
-    void InOrder();
-    void PostOrder();
-    void PreOrder();
-    void Insert(Course course);
-    void Remove(string courseId);
-    Course Search(string courseId);
+    public:
+        BinarySearchTree();
+        virtual ~BinarySearchTree();
+        void InOrder();
+        void PostOrder();
+        void PreOrder();
+        void Insert(Course course);
+        void Remove(string courseId);
+        Course Search(string courseId);
 };
 
 /**
  * ======== Default Constructor ========
  */
 BinarySearchTree::BinarySearchTree() {
-    //Root is equal to nullptr
     root = nullptr;
 }
-
 
 /**
  * ======== Destructor ========
  */
 BinarySearchTree::~BinarySearchTree() {
-    //Recurse from root deleting every node
-    while (root != nullptr) {
-        Remove(root->course.courseId);
-    }
+    destroyTree(root);
+    root = nullptr;
 }
 
 
-/**
- * ======== InOrder ========
- * Traverse the BST in order, starting at the root, outputing the nodes in order.
- */
-void BinarySearchTree::InOrder() {
-    //Call inOrder fuction and pass root
-    inOrder(root);
-}
-
+//============================================================================
+// Private Class Methods
+//============================================================================
 
 /**
- * ======== PostOrder ========
- * Traverse the BST in post-order, starting at the root, outputing the nodes in post-order.
- */
-void BinarySearchTree::PostOrder() {
-    //Call postOrder fuction and pass root
-    postOrder(root);
-}
-
-
-/**
- * ======== PreOrder ========
- * Traverse the BST in pre-order, starting at the root, outputing the nodes in pre-order.
- */
-void BinarySearchTree::PreOrder() {
-    //Call preOrder fuction and pass root
-    preOrder(root);
-}
-
-
-/**
- * ======== Insert ========
- * Insert a course to the BST.
- *
- * @param course Course Structure to be added.
- */
-void BinarySearchTree::Insert(Course course) {
-    // If root equal to null ptr
-    if (root == nullptr) {
-        //Root is equal to new node course
-        this->root = new Node(course);
-    }
-    //Else
-    else {
-        //Add Node root and course
-        this->addNode(root, course);
-    }
-}
-
-
-/**
- * ======== Remove ========
- * Remove a course from the BST.
- *
- * @param courseId Course to be removed.
- */
-void BinarySearchTree::Remove(string courseId) {
-    //Remove node root courseID
-    this->removeNode(root, courseId);
-}
-
-
-/**
- * ======== Search ========
- * Search for a course in the BST.
- *
- * @param courseId Course to be found
- */
-Course BinarySearchTree::Search(string courseId) {
-    //Set current node equal to root
-    Node* currNode = root;
-
-    //Keep looping downwards until bottom reached or matching courseId found
-    while (currNode != nullptr) {
-        //If current node matches courseId, return current node course
-        if (currNode->course.courseId == courseId) {
-            return currNode->course;
-        }
-
-        //Else If 
-        //Current node courseId is greater than input courseId, go left
-        else if (currNode->course.courseId > courseId) {
-            currNode = currNode->left;
-        }
-
-        //Else
-        //Current node courseId is smaller than input courseId, go right
-        else {
-            currNode = currNode->right;
-        }
-    }
-
-    //No match found, return empty course
-    Course course;
-    return course;
-}
-
-
-/**
- * ======== addNode ========
- * Add a course to some node (recursive).
+ * ======== height ========
+ * returns the height of current node. If node is null, returns -1.
  *
  * @param node Current node in tree
- * @param course Course Structure to be added
+ * @return node->height or -1
  */
-void BinarySearchTree::addNode(Node* node, Course course) {
-    //If node is larger than course.courseId, then add to left
-    if (node->course.courseId > course.courseId) {
-        //If no left node
-        if (node->left == nullptr) {
-            //This node becomes left
-            node->left = new Node(course);
-        }
-        //Else recurse down the left node
-        else {
-            this->addNode(node->left, course);
-        }
-    }
-
-    //Else
-    else {
-        //If no right node
-        if (node->right == nullptr) {
-            //This node becomes right
-            node->right = new Node(course);
-        }
-        //Else recurse down the right node
-        else {
-            this->addNode(node->right, course);
-        }
-    }
-}
-
-
-/**
- * ======== removeNode ========
- * Remove a course node from the BST (recursive).
- *
- * @param node Current node in tree
- * @param course Course to be removed
- *
- * @return
- */
-Node* BinarySearchTree::removeNode(Node* node, string courseId) {
-    if (node == nullptr) {
-        return node;
-    }
-    //Go left
-    if (node->course.courseId > courseId) {
-        node->left = removeNode(node->left, courseId);
-    }
-    //Go right
-    else if (node->course.courseId < courseId) {
-        node->right = removeNode(node->right, courseId);
-    }
-    else {
-        //If Node is Leaf Node
-        if (node->left == nullptr && node->right == nullptr) {
-            delete node;
-            node = nullptr;
-        }
-        //Node has 1 child node to the left
-        else if (node->left != nullptr && node->right == nullptr) {
-            Node* tempNode = node;
-            node = node->left;
-            delete tempNode;
-        }
-        //Node has 1 child node to the right
-        else if (node->left == nullptr && node->right != nullptr) {
-            Node* tempNode = node;
-            node = node->right;
-            delete tempNode;
-        }
-        //Node has 2 child nodes
-        else {
-            Node* tempNode = node->right;
-            while (tempNode->left != nullptr) {
-                tempNode = tempNode->left;
-            }
-            node->course = tempNode->course;
-            node->right = removeNode(node->right, tempNode->course.courseId);
-        }
-    }
-
-    return node;
+int BinarySearchTree::height(Node* node) {
+    return node ? node->height : -1;
 }
 
 
@@ -361,6 +177,293 @@ void BinarySearchTree::preOrder(Node* node) {
         //postOrder right
         preOrder(node->right);
     }
+}
+
+
+/**
+ * ======== updateHeight ========
+ * Traverse the BST in pre-order, outputing the nodes in pre-order (recursive).
+ *
+ * @param node Current node in tree
+ */
+void BinarySearchTree::updateHeight(Node* node) {
+    if (node != nullptr) {
+        node->height = max(height(node->left), height(node->right)) + 1;
+    }
+}
+
+
+/**
+ * ======== destroyTree ========
+ * Traverse the BST in pre-order, outputing the nodes in pre-order (recursive).
+ *
+ * @param node Current node in tree
+ */
+void BinarySearchTree::destroyTree(Node* node) {
+    if (node != nullptr) {
+        destroyTree(node->left);
+        destroyTree(node->right);
+        delete node;
+    }
+}
+
+
+/**
+ * ======== addNode ========
+ * Add a course to some node (recursive).
+ *
+ * @param node Current node in tree
+ * @param course Course Structure to be added
+ */
+Node* BinarySearchTree::addNode(Node* node, Course course) {
+    // If node is is empty
+    if (node == nullptr) {
+        return new Node(course);
+    }
+    // If courseId is smaller than course.courseId, add to left.
+    if (course.courseId < node->course.courseId) {
+        node->left = addNode(node->left, course);
+    }
+    // Else, add to right.
+    else {
+        node->right = addNode(node->right, course);
+    }
+    // Rebalance the tree
+    return rebalance(node);
+}
+
+
+/**
+ * ======== removeNode ========
+ * Remove a course node from the BST (recursive).
+ *
+ * @param node Current node in tree
+ * @param course Course to be removed
+ *
+ * @return
+ */
+Node* BinarySearchTree::removeNode(Node* node, string courseId) {
+    if (node == nullptr) {
+        return node;
+    }
+    //Go left
+    if (node->course.courseId > courseId) {
+        node->left = removeNode(node->left, courseId);
+    }
+    //Go right
+    else if (node->course.courseId < courseId) {
+        node->right = removeNode(node->right, courseId);
+    }
+    else {
+        //If Node is Leaf Node
+        if (node->left == nullptr && node->right == nullptr) {
+            delete node;
+            node = nullptr;
+        }
+        //Node has 1 child node to the left
+        else if (node->left != nullptr && node->right == nullptr) {
+            Node* tempNode = node;
+            node = node->left;
+            delete tempNode;
+        }
+        //Node has 1 child node to the right
+        else if (node->left == nullptr && node->right != nullptr) {
+            Node* tempNode = node;
+            node = node->right;
+            delete tempNode;
+        }
+        //Node has 2 child nodes
+        else {
+            Node* tempNode = node->right;
+            while (tempNode->left != nullptr) {
+                tempNode = tempNode->left;
+            }
+            node->course = tempNode->course;
+            node->right = removeNode(node->right, tempNode->course.courseId);
+        }
+    }
+    node = rebalance(node);
+
+    return node;
+}
+
+
+/**
+ * ======== leftRotate ========
+ * 
+ *
+ * @param node Current node in tree
+ * @return 
+ */
+Node* BinarySearchTree::leftRotate(Node* node) {
+    Node* rightChild = node->right;
+    Node* temp = rightChild->left;
+
+    rightChild->left = node;
+    node->right = temp;
+
+    updateHeight(node);
+    updateHeight(rightChild);
+
+    return rightChild;
+}
+
+
+/**
+ * ======== rightRotate ========
+ * 
+ *
+ * @param node Current node in tree
+ * @return 
+ */
+Node* BinarySearchTree::rightRotate(Node* node) {
+    Node* leftChild = node->left;
+    Node* temp = leftChild->right;
+
+    leftChild->right = node;
+    node->left = temp;
+
+    updateHeight(node);
+    updateHeight(leftChild);
+
+    return leftChild;
+}
+
+
+
+/**
+ * ======== rebalance ========
+ *
+ *
+ * @param node Current node in tree
+ */
+Node* BinarySearchTree::rebalance(Node* node) {
+    if (node == nullptr) {
+        return node;
+    }
+
+    updateHeight(node);
+    int balance = height(node->left) - height(node->right);
+
+    // Left Heavy
+    if (balance > 1) {
+        // Left-Left
+        if (height(node->left->left) >= height(node->left->right)) {
+            return rightRotate(node);
+        }
+        // Left-Right
+        else {
+            node->left = leftRotate(node->left);
+            return rightRotate(node);
+        }
+    }
+    // Right Heavy
+    else if (balance < -1) {
+        // Right-Right
+        if (height(node->right->right) >= height(node->right->left)) {
+            return leftRotate(node);
+        }
+        // Right-Left
+        else {
+            node->right = rightRotate(node->right);
+            return leftRotate(node);
+        }
+    }
+
+    return node;
+} 
+
+
+//============================================================================
+// Public Class Methods
+//============================================================================
+
+/**
+ * ======== InOrder ========
+ * Traverse the BST in order, starting at the root, outputing the nodes in order.
+ */
+void BinarySearchTree::InOrder() {
+    //Call inOrder fuction and pass root
+    inOrder(root);
+}
+
+
+/**
+ * ======== PostOrder ========
+ * Traverse the BST in post-order, starting at the root, outputing the nodes in post-order.
+ */
+void BinarySearchTree::PostOrder() {
+    //Call postOrder fuction and pass root
+    postOrder(root);
+}
+
+
+/**
+ * ======== PreOrder ========
+ * Traverse the BST in pre-order, starting at the root, outputing the nodes in pre-order.
+ */
+void BinarySearchTree::PreOrder() {
+    //Call preOrder fuction and pass root
+    preOrder(root);
+}
+
+
+/**
+ * ======== Insert ========
+ * Insert a course to the BST.
+ *
+ * @param course Course Structure to be added.
+ */
+void BinarySearchTree::Insert(Course course) {
+    root = addNode(root, course);
+}
+
+
+/**
+ * ======== Remove ========
+ * Remove a course from the BST.
+ *
+ * @param courseId Course to be removed.
+ */
+void BinarySearchTree::Remove(string courseId) {
+    //
+    root = removeNode(root, courseId);
+}
+
+
+/**
+ * ======== Search ========
+ * Search for a course in the BST.
+ *
+ * @param courseId Course to be found
+ */
+Course BinarySearchTree::Search(string courseId) {
+    //Set current node equal to root
+    Node* currNode = root;
+
+    //Keep looping downwards until bottom reached or matching courseId found
+    while (currNode != nullptr) {
+        //If current node matches courseId, return current node course
+        if (currNode->course.courseId == courseId) {
+            return currNode->course;
+        }
+
+        //Else If 
+        //Current node courseId is greater than input courseId, go left
+        else if (currNode->course.courseId > courseId) {
+            currNode = currNode->left;
+        }
+
+        //Else
+        //Current node courseId is smaller than input courseId, go right
+        else {
+            currNode = currNode->right;
+        }
+    }
+
+    //No match found, return empty course
+    Course course;
+    return course;
 }
 
 
