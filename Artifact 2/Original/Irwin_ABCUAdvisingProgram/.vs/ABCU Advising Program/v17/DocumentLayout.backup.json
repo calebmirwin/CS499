@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\caleb\\Documents\\GitHub\\CS499\\Artifact 2\\Original\\Irwin_ABCUAdvisingProgram\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{ADB397C0-3C55-48A9-8F84-4070101C022D}|ABCU Advising Program.vcxproj|C:\\Users\\caleb\\Documents\\GitHub\\CS499\\Artifact 2\\Original\\Irwin_ABCUAdvisingProgram\\Source.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{ADB397C0-3C55-48A9-8F84-4070101C022D}|ABCU Advising Program.vcxproj|solutionrelative:Source.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{ADB397C0-3C55-48A9-8F84-4070101C022D}|ABCU Advising Program.vcxproj|C:\\Users\\caleb\\Documents\\GitHub\\CS499\\Artifact 2\\Original\\Irwin_ABCUAdvisingProgram\\ABCUAdvisingProgram.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{ADB397C0-3C55-48A9-8F84-4070101C022D}|ABCU Advising Program.vcxproj|solutionrelative:ABCUAdvisingProgram.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,12 +19,12 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Source.cpp",
-              "DocumentMoniker": "C:\\Users\\caleb\\Documents\\GitHub\\CS499\\Artifact 2\\Original\\Irwin_ABCUAdvisingProgram\\Source.cpp",
-              "RelativeDocumentMoniker": "Source.cpp",
-              "ToolTip": "C:\\Users\\caleb\\Documents\\GitHub\\CS499\\Artifact 2\\Original\\Irwin_ABCUAdvisingProgram\\Source.cpp",
-              "RelativeToolTip": "Source.cpp",
-              "ViewState": "AgIAAMEBAAAAAAAAAAAgwNkBAAAMAAAAAAAAAA==",
+              "Title": "ABCUAdvisingProgram.cpp",
+              "DocumentMoniker": "C:\\Users\\caleb\\Documents\\GitHub\\CS499\\Artifact 2\\Original\\Irwin_ABCUAdvisingProgram\\ABCUAdvisingProgram.cpp",
+              "RelativeDocumentMoniker": "ABCUAdvisingProgram.cpp",
+              "ToolTip": "C:\\Users\\caleb\\Documents\\GitHub\\CS499\\Artifact 2\\Original\\Irwin_ABCUAdvisingProgram\\ABCUAdvisingProgram.cpp",
+              "RelativeToolTip": "ABCUAdvisingProgram.cpp",
+              "ViewState": "AgIAAMEBAAAAAAAAAAAgwNkBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-02-24T02:32:06.673Z",
               "EditorCaption": ""
