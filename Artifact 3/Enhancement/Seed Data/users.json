@@ -1,0 +1,18 @@
+[
+    {
+      "username": "admin",
+      "passwordHash": "$2b$12$WQvf1fIBWpVL.KMo6HMoaOIViO3W3vJt1M9BHzaOdcJJ2nieut1Ra",
+      "role": "admin"
+    },
+    {
+      "username": "manager",
+      "passwordHash": "$2b$12$0lBmWfDE3fwZlXQdidF1C.DhQVtigOsHqKHk9eMKiC3cnmg4eWIHu",
+      "role": "manager"
+    },
+    {
+      "username": "advisor",
+      "passwordHash": "$2b$12$hEFdIezYxJTE.ETTcCCTyeRDcEaJk9rM2ueUa4Izp.kaT8vaPxJzq",
+      "role": "advisor"
+    }
+  ]
+  
